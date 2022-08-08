@@ -1,0 +1,86 @@
+--Shows all data from account_at native table--
+select * from LUCEPLAY..ACCOUNT_AT_NATIVE
+
+--shows total credit amount
+select sum(CREDIT_AMOUNT)as Total_credit_Amount from LUCEPLAY..ACCOUNT_AT_NATIVE
+
+--shows total credit amount by year
+select  ACCT_YEAR,CURRENCY_ID,sum(CREDIT_AMOUNT)as Total_credit_Amount 
+from LUCEPLAY..ACCOUNT_AT_NATIVE
+group by ACCT_YEAR,CURRENCY_ID
+
+--shows yearly total credit amount and total debit amount in diffrent curruncey 
+select  ACCT_YEAR,CURRENCY_ID,sum(CREDIT_AMOUNT)as Total_credit_Amount , sum(DEBIT_AMOUNT) as Total_Debit_Amount
+from LUCEPLAY..ACCOUNT_AT_NATIVE
+group by ACCT_YEAR,CURRENCY_ID
+
+-- shows yearly total credit amount and total debit amount in diffrent curruncey  with uniq id
+select  DISTINCT ACCOUNT_ID,ACCT_YEAR,CURRENCY_ID,sum(CREDIT_AMOUNT)as Total_credit_Amount , sum(DEBIT_AMOUNT) as Total_Debit_Amount
+from LUCEPLAY..ACCOUNT_AT_NATIVE
+group by ACCT_YEAR,CURRENCY_ID,ACCOUNT_ID
+
+
+select  ACCOUNT_ID,ACCT_YEAR,ACCT_PERIOD,sum(CREDIT_AMOUNT)as Total_credit_Amount , sum(DEBIT_AMOUNT) as Total_Debit_Amount,CURRENCY_ID
+from LUCEPLAY..ACCOUNT_AT_NATIVE
+group by ACCT_YEAR,CURRENCY_ID,ACCOUNT_ID,ACCT_PERIOD
+
+
+
+
+--Shows total number of account id
+select count(DISTINCT ACCOUNT_ID)as Total_Account_ID from LUCEPLAY..ACCOUNT_AT_NATIVE
+
+--To confirm total number of account id 
+--removed ACCT_YEAR,CURRENCY_ID Columns 
+select ACCOUNT_ID,sum(CREDIT_AMOUNT)as Total_credit_Amount , sum(DEBIT_AMOUNT) as Total_Debit_Amount
+from LUCEPLAY..ACCOUNT_AT_NATIVE
+group by ACCOUNT_ID
+
+
+--shows data not in site L1
+select * from LUCEPLAY..ACCOUNT_AT_NATIVE
+where SITE_ID != 'L1'
+
+
+
+--Joins two tables to see description of id	
+select ACC.ID,ACC.DESCRIPTION,ACN.SITE_ID,ACN.ACCT_YEAR,ACN.CREDIT_AMOUNT,ACN.DEBIT_AMOUNT,ACN.CURRENCY_ID
+from LUCEPLAY..ACCOUNT as ACC
+join 
+LUCEPLAY..ACCOUNT_AT_NATIVE as ACN
+ON ACC.ID=ACN.ACCOUNT_ID
+
+--Shows total of debit and credit by each id and description of that id
+select  ACC.ID,ACC.DESCRIPTION,ACN.ACCT_YEAR,ACN.CURRENCY_ID,sum(ACN.CREDIT_AMOUNT)as Total_credit_Amount , sum(ACN.DEBIT_AMOUNT) as Total_Debit_Amount
+from LUCEPLAY..ACCOUNT as ACC
+join 
+LUCEPLAY..ACCOUNT_AT_NATIVE as ACN
+ON ACC.ID=ACN.ACCOUNT_ID
+group by ACN.ACCT_YEAR,ACN.CURRENCY_ID,ACC.ID,ACC.DESCRIPTION
+
+
+
+select  ACC.ID,ACC.DESCRIPTION,sum(ACN.CREDIT_AMOUNT)as Total_credit_Amount , sum(ACN.DEBIT_AMOUNT) as Total_Debit_Amount,ACN.CURRENCY_ID
+from LUCEPLAY..ACCOUNT as ACC
+join 
+LUCEPLAY..ACCOUNT_AT_NATIVE as ACN
+ON ACC.ID=ACN.ACCOUNT_ID
+group by ACN.CURRENCY_ID,ACC.ID,ACC.DESCRIPTION
+
+--Shows total balance for each id
+select  ACC.ID,ACC.DESCRIPTION,sum(ACN.CREDIT_AMOUNT)as Total_credit_Amount , sum(ACN.DEBIT_AMOUNT) as Total_Debit_Amount,ACN.CURRENCY_ID, (sum(ACN.CREDIT_AMOUNT)-sum(ACN.DEBIT_AMOUNT)) as Total_Balance
+from LUCEPLAY..ACCOUNT as ACC
+join 
+LUCEPLAY..ACCOUNT_AT_NATIVE as ACN
+ON ACC.ID=ACN.ACCOUNT_ID
+group by ACN.CURRENCY_ID,ACC.ID,ACC.DESCRIPTION
+
+
+-- Shows Top 10 data with maximum balance
+select top 10 ACC.ID,ACC.DESCRIPTION,sum(ACN.CREDIT_AMOUNT)as Total_credit_Amount , sum(ACN.DEBIT_AMOUNT) as Total_Debit_Amount,ACN.CURRENCY_ID, (sum(ACN.CREDIT_AMOUNT)-sum(ACN.DEBIT_AMOUNT)) as Total_Balance
+from LUCEPLAY..ACCOUNT as ACC
+join 
+LUCEPLAY..ACCOUNT_AT_NATIVE as ACN
+ON ACC.ID=ACN.ACCOUNT_ID
+group by ACN.CURRENCY_ID,ACC.ID,ACC.DESCRIPTION
+order by Total_Balance desc
