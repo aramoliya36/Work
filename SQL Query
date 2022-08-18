@@ -1,0 +1,3 @@
+-------------Convert Image into Varchar-----------
+
+select cast(cast(BITS as varbinary(max)) as nvarchar(max)) as 'TEST' from WORKORDER_BINARY where rowid=641
