@@ -1,4 +1,7 @@
-------database interactive
+------database INTERACTIVE
+----------Ever 20 work order we applied 1 suction cup
+----------maximum 5 suction cup we can give
+---------belove report shows if more than 5 suction cup 
 
 
 
