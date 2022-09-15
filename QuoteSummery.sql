@@ -1,6 +1,8 @@
 use [3GLighting_Production]
 
 ----------------------------------------------Quote Summury ---------------------------------------------------------------
+
+
 select tb1.LatestStatus,
 tb1.today_status,
 case 
@@ -25,7 +27,8 @@ where CAST(tb.LatestUpdatedDate AS DATE) = CAST(DATEADD(DAY, CASE (DATEPART(WEEK
 	                            WHEN 2 THEN -3 
 	                            ELSE -1 END, DATEDIFF(DAY, 0, GETDATE()))as date))as tb2
 on tb1.LatestStatus=tb2.LatestStatus
-order by tb1.LatestStatus desc
+order by (case when tb1.LatestStatus='Pending' then 1 when tb1.LatestStatus='Approved' then 2 else 3 end) --order status in sspecific value
+
 
 -------------------------------Detail for Today Update column-----------------------------------------------------------------
 
